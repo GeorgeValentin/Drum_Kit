@@ -1,12 +1,8 @@
-
 function selectAllElements(className) {
     var elements = document.querySelectorAll(className);
 
     return elements;
 }
-
-// Select all tags that have the class drum from the HTML 
-var drumButtons = selectAllElements(".drum")
 
 function playSoundsForClickEvents(HTMLElement) {
     // For every button inside the HTML add an event listener that, when the click event happens runs the anonymopus function
@@ -17,20 +13,13 @@ function playSoundsForClickEvents(HTMLElement) {
             var buttonInnerHTML = this.innerHTML;
 
             // Determine the sound based on the button that was clicked
-            determineSound(buttonInnerHTML);     
+            determineSound(buttonInnerHTML);  
+
+            animateButton(buttonInnerHTML)
+
         })
     }
 }
-
-playSoundsForClickEvents(drumButtons)
-
-// When the keydown event happens (= when a key is pressed) run the anonymous function
-// The "event" parameter is what results after the keydown event happens
-document.addEventListener("keydown", function(event) {
-
-    // Determine the sound based on the button that was pressed
-    determineSound(event.key)
-})
 
 function determineSound(key) {
     switch(key) {
@@ -73,7 +62,47 @@ function determineSound(key) {
             break;
 
         default:
-            console.log(buttonInnerHTML)
+            console.log(key)
     }  
 }
 
+function animateButton(currentKey) {
+
+    // We get the element(button) with the class of the currentKey
+    var activeButton = document.querySelector("." + currentKey)
+
+    var buttonOfDrums = selectAllElements(".drum")
+
+    for(var i = 0 ; i < buttonOfDrums.length; i++) {
+        if(activeButton === buttonOfDrums[i]) {
+            // Add the class .pressed to the activeButton
+            activeButton.classList.add("pressed")
+
+            // Wait 0.1 seconds and then remove the .pressed class from the activeButton element
+            setTimeout(function() {
+                activeButton.classList.remove("pressed")
+            }, 100)
+        } 
+    }
+}
+
+// Select all tags that have the class drum from the HTML 
+var drumButtons = selectAllElements(".drum")
+
+playSoundsForClickEvents(drumButtons)
+
+// When the keydown event happens (= when a key is pressed) run the anonymous function
+// The "event" parameter is what results after the keydown event happens
+document.addEventListener("keydown", function(event) {
+
+    var pressedKey = event.key
+
+    if(event.code === "Space") {
+        console.log(event.key)
+    } else {
+        // Determine the sound based on the button that was pressed
+        determineSound(pressedKey)
+
+        animateButton(pressedKey)
+    }
+})
